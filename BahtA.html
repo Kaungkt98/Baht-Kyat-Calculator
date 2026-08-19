@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baht-Kyat Calculator</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to ensure Inter font and overall layout */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5; /* Light gray background */
+            margin: 0;
+            padding: 1rem; /* Padding around the entire app */
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 400px; /* Max width for mobile-like appearance */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        /* Style for the message box */
+        .message-box {
+            background-color: #ffe0b2; /* Light orange */
+            color: #e65100; /* Dark orange text */
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="container p-6 md:p-8 space-y-6">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Baht-Kyat Calculator</h1>
+
+        <!-- Exchange Rate Input -->
+        <div class="flex flex-col space-y-2">
+            <label for="exchangeRate" class="text-sm font-medium text-gray-700">Exchange Rate:</label>
+            <div class="flex items-center bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                <!-- <span class="px-3 py-2 text-gray-600 font-semibold text-sm">	100,000 MMK =	</span> -->
+                <input
+                    type="number"
+                    id="exchangeRate"
+                    placeholder="e.g., 700 THB"
+                    class="flex-grow p-2.5 bg-transparent outline-none text-gray-900 text-base rounded-r-lg"
+                    \\value="700" <!-- Default value for convenience -->
+                
+                
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Enter how many Thai Baht (THB) equal 100,000 Myanmar Kyat (MMK).</p>
+        </div>
+
+        <!-- Myanmar Kyat Input -->
+        <div class="flex flex-col space-y-2">
+            <label for="mmkInput" class="text-sm font-medium text-gray-700">Myanmar Kyat (MMK):</label>
+            <input
+                type="number"
+                id="mmkInput"
+                placeholder="Enter MMK amount"
+                class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-lg"
+                aria-label="Myanmar Kyat input field"
+            >
+        </div>
+
+        <!-- Thai Baht Input -->
+        <div class="flex flex-col space-y-2">
+            <label for="thbInput" class="text-sm font-medium text-gray-700">Thai Baht (THB):</label>
+            <input
+                type="number"
+                id="thbInput"
+                placeholder="Enter THB amount"
+                class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-lg"
+                aria-label="Thai Baht input field"
+            >
+        </div>
+
+        <!-- Calculate Button -->
+        <button
+            id="calculateBtn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-lg"
+            aria-label="Calculate conversion"
+        >
+            Calculate
+        </button>
+
+        <!-- Message Box for errors/info -->
+        <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const mmkInput = document.getElementById('mmkInput');
+        const thbInput = document.getElementById('thbInput');
+        const exchangeRateInput = document.getElementById('exchangeRate');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const messageBox = document.getElementById('messageBox');
+
+        // Function to display messages in the message box
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            if (type === 'error') {
+                messageBox.style.backgroundColor = '#ffe0b2'; // Light orange
+                messageBox.style.color = '#e65100'; // Dark orange text
+            } else {
+                messageBox.style.backgroundColor = '#d4edda'; // Light green
+                messageBox.style.color = 'black'; // Dark green text
+            }
+        }
+
+        // Function to hide the message box
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+        }
+
+        // Event listener for MMK input to clear THB input
+        mmkInput.addEventListener('input', () => {
+            if (mmkInput.value !== '') {
+                thbInput.value = ''; // Clear THB input if MMK is being typed
+            }
+            hideMessageBox(); // Hide messages on new input
+        });
+
+        // Event listener for THB input to clear MMK input
+        thbInput.addEventListener('input', () => {
+            if (thbInput.value !== '') {
+                mmkInput.value = ''; // Clear MMK input if THB is being typed
+            }
+            hideMessageBox(); // Hide messages on new input
+        });
+
+        // Main calculation logic
+        calculateBtn.addEventListener('click', () => {
+            hideMessageBox(); // Clear previous messages
+
+            const rate100kKyatToBaht = parseFloat(exchangeRateInput.value);
+            const mmkAmount = parseFloat(mmkInput.value);
+            const thbAmount = parseFloat(thbInput.value);
+
+            // Validate exchange rate
+            if (isNaN(rate100kKyatToBaht) || rate100kKyatToBaht <= 0) {
+                showMessage('Please enter a valid positive exchange rate (e.g., 1200 for 100,000 MMK).');
+                return;
+            }
+
+            // Determine which conversion to perform
+            if (!isNaN(mmkAmount) && mmkAmount > 0) {
+                // Convert MMK to THB
+                const resultThb = (mmkAmount / 100000) * rate100kKyatToBaht;
+                thbInput.value = resultThb.toFixed(2); // Display THB with 2 decimal places
+                showMessage(`${mmkAmount.toLocaleString()} MMK = ${resultThb.toFixed(2).toLocaleString()} THB.`, 'success');
+            } else if (!isNaN(thbAmount) && thbAmount > 0) {
+                // Convert THB to MMK
+                const resultMmk = (thbAmount / rate100kKyatToBaht) * 100000;
+                mmkInput.value = resultMmk.toFixed(2); // Display MMK with 2 decimal places
+                showMessage(`${thbAmount.toLocaleString()} THB = ${resultMmk.toFixed(2).toLocaleString()} MMK.`, 'success');
+            } else {
+                // No valid input
+                showMessage('Please enter a valid positive amount in either Myanmar Kyat or Thai Baht.');
+            }
+        });
+    </script>
+
+
+
+
