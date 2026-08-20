@@ -177,13 +177,13 @@
                 // Convert MMK to THB
                 const resultThb = (mmkAmount / 100000) * rate100kKyatToBaht;
                 thbInput.value = resultThb.toFixed(0); // Display THB with 2 decimal places
-                showMessage(`${mmkAmount.toLocaleString()} MMK = ${resultThb.toFixed(0).toLocaleString()} THB.
+                showMessage(`${mmkAmount.toLocaleString()} Kyats = ${resultThb.toFixed(0).toLocaleString()} Baht.
                 Rate ${rate100kKyatToBaht.toLocaleString()}`, 'success');
             } else if (!isNaN(thbAmount) && thbAmount > 0) {
                 // Convert THB to MMK
                 const resultMmk = (thbAmount / rate100kKyatToBaht) * 100000;
                 mmkInput.value = resultMmk.toFixed(0); // Display MMK with 2 decimal places
-                showMessage(`${thbAmount.toLocaleString()} THB = ${resultMmk.toFixed(0).toLocaleString()} MMK.
+                showMessage(`${thbAmount.toLocaleString()} Baht = ${resultMmk.toFixed(0).toLocaleString()} Kyats.
                 Rate ${rate100kKyatToBaht.toLocaleString()}`, 'success');
             } else {
                 // No valid input
