@@ -176,13 +176,15 @@
             if (!isNaN(mmkAmount) && mmkAmount > 0) {
                 // Convert MMK to THB
                 const resultThb = (mmkAmount / 100000) * rate100kKyatToBaht;
-                thbInput.value = resultThb.toFixed(2); // Display THB with 2 decimal places
-                showMessage(`${mmkAmount.toLocaleString()} MMK = ${resultThb.toFixed(2).toLocaleString()} THB.`, 'success');
+                thbInput.value = resultThb.toFixed(0); // Display THB with 2 decimal places
+                showMessage(`${mmkAmount.toLocaleString()} MMK = ${resultThb.toFixed(0).toLocaleString()} THB.
+                Rate ${rate100kKyatToBaht.toLocaleString()}`, 'success');
             } else if (!isNaN(thbAmount) && thbAmount > 0) {
                 // Convert THB to MMK
                 const resultMmk = (thbAmount / rate100kKyatToBaht) * 100000;
-                mmkInput.value = resultMmk.toFixed(2); // Display MMK with 2 decimal places
-                showMessage(`${thbAmount.toLocaleString()} THB = ${resultMmk.toFixed(2).toLocaleString()} MMK.`, 'success');
+                mmkInput.value = resultMmk.toFixed(0); // Display MMK with 2 decimal places
+                showMessage(`${thbAmount.toLocaleString()} THB = ${resultMmk.toFixed(0).toLocaleString()} MMK.
+                Rate ${rate100kKyatToBaht.toLocaleString()}`, 'success');
             } else {
                 // No valid input
                 showMessage('Please enter a valid positive amount in either Myanmar Kyat or Thai Baht.');
